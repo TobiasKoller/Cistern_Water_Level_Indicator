@@ -1,4 +1,4 @@
-#include <display.h>
+#include "display.h"
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -19,10 +19,10 @@
 
     void Oled_Display_128_32::Flush(){
       
-      Serial.println("flushing...");
+      // Serial.println("flushing...");
       if(!display) return;
       display->display();
-      Serial.println("flushed");
+      // Serial.println("flushed");
     }
 
     void Oled_Display_128_32::PrintTextOnDisplay(const char* text, int lineNumber) {
