@@ -1,8 +1,10 @@
 #include "BLEasyServer.h"
 #include <Wire.h>
 
+bool BLEasyServer::deviceConnected = false;
+
 BLEasyServer::BLEasyServer(const std::string& serverName, const std::string& serviceUUID) 
-    : deviceConnected(false), lastTime(0), timerDelay(3000) {
+    : lastTime(0), timerDelay(3000) {
     BLEDevice::init(String(serverName.c_str()));
     pServer = BLEDevice::createServer();
     pServer->setCallbacks(new MyServerCallbacks());

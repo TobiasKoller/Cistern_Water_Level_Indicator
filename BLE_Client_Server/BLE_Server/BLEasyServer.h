@@ -16,6 +16,8 @@ public:
     void registerCharacteristic(const std::string& charUUID, const std::string& descriptorValue);
     void updateCharacteristic(const std::string& charUUID, const std::string& value);
 
+    static bool deviceConnected; // Make it static
+
 private:
     class MyServerCallbacks : public BLEServerCallbacks {
         void onConnect(BLEServer* pServer);
@@ -25,9 +27,9 @@ private:
     BLEServer* pServer;
     BLEService* pService;
     std::map<std::string, BLECharacteristic*> characteristics;
-    bool deviceConnected;
     unsigned long lastTime;
     unsigned long timerDelay;
 };
+
 
 #endif // BLEASY_SERVER_H
