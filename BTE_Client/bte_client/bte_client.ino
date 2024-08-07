@@ -120,18 +120,18 @@ void loop()
 { 
   RemoteXY_Handler ();
 
-  RemoteXY_delay(20000);
+  // RemoteXY_delay(20000);
 
-  _distanceSensor.Setup(RemoteXY.distance_empty, RemoteXY.distance_full);
+  // _distanceSensor.Setup(RemoteXY.distance_empty, RemoteXY.distance_full);
 
-  int percentage = _distanceSensor.CalculateDistanceInPercentage();
+  // int percentage = _distanceSensor.CalculateDistanceInPercentage();
 
-  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
-  Serial.println("Setup ESP32 to sleep for every " + String(TIME_TO_SLEEP) + " Seconds");
+  // esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
+  // Serial.println("Setup ESP32 to sleep for every " + String(TIME_TO_SLEEP) + " Seconds");
 
-  Serial.println("percentage: ");
-  Serial.println(std::to_string(percentage).c_str());
-  RemoteXY.waterlevel_control = static_cast<float>(percentage);
+  // Serial.println("percentage: ");
+  // Serial.println(std::to_string(percentage).c_str());
+  // RemoteXY.waterlevel_control = static_cast<float>(percentage);
   
   if(hasDistanceSettingsChanged())
   {
@@ -139,10 +139,10 @@ void loop()
     saveValuesToStorage();
   }
 
-  Serial.println("Going to sleep now");
+  // Serial.println("Going to sleep now");
   
-  Serial.flush(); 
-  esp_deep_sleep_start();
+  // Serial.flush(); 
+  // esp_deep_sleep_start();
 
   //delay(5000);
   // Serial.println(max);
