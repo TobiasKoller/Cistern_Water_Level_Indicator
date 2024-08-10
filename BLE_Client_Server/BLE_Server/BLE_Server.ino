@@ -6,30 +6,42 @@
 #define SERVICE_UUID "91bad492-b950-4226-aa2b-4ede9fa42f59"
 #define CHARACTERISTIC_UUID "cba1d466-344c-4be3-ab3f-189f80dd7518"
 
-BLEasyServer bleServer(SERVER_NAME, SERVICE_UUID);
+
+BLEasyServer* bleServer;
+unsigned long previousMillis = 0;
+const long interval = 3000; // 3 Sekunden
 
 void setup() {
-    // Starte den BLE Server
-    bleServer.start();
+  Serial.begin(115200);
+  
+  bleServer = new BLEasyServer(SERVER_NAME, SERVICE_UUID);     
+  // Registriere die WaterLevel Characteristic
+  bleServer->registerCharacteristic(CHARACTERISTIC_UUID, "Water Level in %");
 
-    // Registriere die WaterLevel Characteristic
-    bleServer.registerCharacteristic(CHARACTERISTIC_UUID, "Water Level in %");
+  // Starte den BLE Server
+  bleServer->start();
 }
 
 void loop() {
-    // Aktualisiere den BLE Server
-    bleServer.loop();
+    
+  // Beispiel: Aktualisiere den Wasserstandswert
+  static uint8_t waterLevel = 0;
+  unsigned long currentMillis = millis();
 
-    // Beispiel: Aktualisiere den Wasserstandswert
-    static uint8_t waterLevel = 0;
-    if (millis() % 3000 == 0) { // Alle 3 Sekunden
-        if (waterLevel > 100) waterLevel = 0;
-        waterLevel++;
-        bleServer.updateCharacteristic(CHARACTERISTIC_UUID, std::to_string(waterLevel));
-        Serial.print("WaterLevel: ");
-        Serial.print(waterLevel);
-        Serial.println(" %");
-    }
+  if (currentMillis - previousMillis >= interval) {
+    Serial.println("trigger...");
+    Serial.println(String(currentMillis - previousMillis));
+      
+
+    previousMillis = currentMillis;
+    waterLevel++;
+    bleServer->updateCharacteristic(CHARACTERISTIC_UUID, std::to_string(waterLevel));
+    Serial.print("WaterLevel: ");
+    Serial.print(waterLevel);
+    Serial.println(" %");
+
+    bleServer->notify();
+  }
 }
 
 

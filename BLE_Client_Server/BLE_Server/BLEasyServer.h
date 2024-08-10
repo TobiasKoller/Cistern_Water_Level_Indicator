@@ -12,14 +12,14 @@ class BLEasyServer {
 public:
     BLEasyServer(const std::string& serverName, const std::string& serviceUUID);
     void start();
-    void loop();
+    void notify();
     void registerCharacteristic(const std::string& charUUID, const std::string& descriptorValue);
     void updateCharacteristic(const std::string& charUUID, const std::string& value);
 
     static bool deviceConnected; // Make it static
 
 private:
-    class MyServerCallbacks : public BLEServerCallbacks {
+    class ClientServerCallbacks : public BLEServerCallbacks {
         void onConnect(BLEServer* pServer);
         void onDisconnect(BLEServer* pServer);
     };
@@ -29,6 +29,7 @@ private:
     std::map<std::string, BLECharacteristic*> characteristics;
     unsigned long lastTime;
     unsigned long timerDelay;
+    std::string serviceUUID;
 };
 
 
