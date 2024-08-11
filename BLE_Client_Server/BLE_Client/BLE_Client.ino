@@ -1,17 +1,39 @@
-#include "BLEasyClient.h"
+#include <BLEasyClient.h>
 
-BLEasyClient bleClient("WaterLevelIndicator_ESP32", 
-                       BLEUUID("91bad492-b950-4226-aa2b-4ede9fa42f59"), 
-                       BLEUUID("cba1d466-344c-4be3-ab3f-189f80dd7518"));
+// Deine BLE UUIDs hier definieren
+BLEUUID serviceUUID("91bad492-b950-4226-aa2b-4ede9fa42f59");
+BLEUUID characteristicUUID("cba1d466-344c-4be3-ab3f-189f80dd7518");
+#define SERVER_NAME "WaterLevelIndicator_ESP32"
+
+
+// Erstelle ein BLEasyClient-Objekt
+BLEasyClient bleClient(SERVER_NAME, serviceUUID, characteristicUUID);
 
 void setup() {
+    Serial.begin(115200);
+
+    // Initialisiere den BLEasyClient
     bleClient.begin();
+
+    // Setze die Callback-Funktion
+    bleClient.setNotifyCallback(myNotifyCallback);
 }
 
 void loop() {
     bleClient.update();
-    delay(1000);
 }
+
+// Definiere die Callback-Funktion
+void myNotifyCallback(BLERemoteCharacteristic* pBLERemoteCharacteristic, uint8_t* pData, size_t length, bool isNotify) {
+    Serial.print("Received data: ");
+    for (size_t i = 0; i < length; ++i) {
+        Serial.print((char)pData[i]);
+    }
+    Serial.println();
+}
+
+
+
 
 
 // // /*********

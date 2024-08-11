@@ -26,20 +26,24 @@ void BLEasyServer::start() {
     Serial.println("Waiting for a client connection to notify...");
 }
 
-void BLEasyServer::notify() {
+bool BLEasyServer::notify() {
     Serial.println("notify...");
+    bool notified = false;
     if (deviceConnected) {
-        // if ((millis() - lastTime) > timerDelay) {
-            for (auto& pair : characteristics) {
-                BLECharacteristic* characteristic = pair.second;
-                characteristic->notify();
-                Serial.print("Characteristic ");
-                Serial.print(pair.first.c_str());
-                Serial.println(" notified.");
-            }
-            lastTime = millis();
-        // }
+        
+      for (auto& pair : characteristics) {
+          BLECharacteristic* characteristic = pair.second;
+          characteristic->notify();
+          Serial.print("Characteristic ");
+          Serial.print(pair.first.c_str());
+          Serial.println(" notified.");
+          notified=true;
+
+      }
+      lastTime = millis();
+      
     }
+    return notified;
 }
 
 void BLEasyServer::registerCharacteristic(const std::string& charUUID, const std::string& descriptorValue) {

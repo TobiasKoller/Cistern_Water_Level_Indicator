@@ -1,19 +1,28 @@
 #include <Arduino.h>
 #include "BLEasyServer.h"
+#include "DistanceSensor.h"
 
 // Definiere den Servernamen und die Service-UUID
 #define SERVER_NAME "WaterLevelIndicator_ESP32"
 #define SERVICE_UUID "91bad492-b950-4226-aa2b-4ede9fa42f59"
 #define CHARACTERISTIC_UUID "cba1d466-344c-4be3-ab3f-189f80dd7518"
 
+//deepsleep settings
+#define uS_TO_S_FACTOR 1000000  /* Conversion factor for micro seconds to seconds */
+#define TIME_TO_SLEEP  60        /* Time ESP32 will go to sleep (in seconds) */
 
 BLEasyServer* bleServer;
 unsigned long previousMillis = 0;
 const long interval = 3000; // 3 Sekunden
+DistanceSensor distanceSensor;
 
 void setup() {
   Serial.begin(115200);
   
+  initBLEServer();
+}
+
+void initBLEServer(){
   bleServer = new BLEasyServer(SERVER_NAME, SERVICE_UUID);     
   // Registriere die WaterLevel Characteristic
   bleServer->registerCharacteristic(CHARACTERISTIC_UUID, "Water Level in %");
@@ -28,19 +37,27 @@ void loop() {
   static uint8_t waterLevel = 0;
   unsigned long currentMillis = millis();
 
+  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
+
   if (currentMillis - previousMillis >= interval) {
-    Serial.println("trigger...");
-    Serial.println(String(currentMillis - previousMillis));
-      
+    
+
+    distanceSensor.Setup(150,30);     
+    int percentage = distanceSensor.CalculateDistanceInPercentage();
 
     previousMillis = currentMillis;
-    waterLevel++;
-    bleServer->updateCharacteristic(CHARACTERISTIC_UUID, std::to_string(waterLevel));
+    bleServer->updateCharacteristic(CHARACTERISTIC_UUID, std::to_string(percentage));
     Serial.print("WaterLevel: ");
-    Serial.print(waterLevel);
+    Serial.print(percentage);
     Serial.println(" %");
 
-    bleServer->notify();
+    if(bleServer->notify()){
+      Serial.println("go to sleep now..");
+      Serial.flush(); 
+      esp_deep_sleep_start();
+    }
+
+    
   }
 }
 

@@ -12,7 +12,7 @@ class BLEasyServer {
 public:
     BLEasyServer(const std::string& serverName, const std::string& serviceUUID);
     void start();
-    void notify();
+    bool notify();
     void registerCharacteristic(const std::string& charUUID, const std::string& descriptorValue);
     void updateCharacteristic(const std::string& charUUID, const std::string& value);
 

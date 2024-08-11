@@ -3,7 +3,7 @@
 
 class DistanceSensor{
   public:
-    void Setup(int16_t minDistance, int16_t maxDistance);
+    void Setup(int16_t distanceEmpty, int16_t distanceFull);
     int CalculateDistanceInPercentage();
     int CalculateDistanceinLiter();
     long GetDistanceInCm();
